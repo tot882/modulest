@@ -55,4 +55,4 @@ class chick(loader.Module):
     "👉🎶🐑 Я — Чи-ки-бам-блан 🎶👈🐏"
 ]:
                 await message.edit(chick)
-                await sleep(1.2)
+                await sleep(2)
