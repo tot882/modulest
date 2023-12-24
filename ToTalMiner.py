@@ -7,6 +7,8 @@ from ..inline.types import InlineCall
 import inspect
 import re
 import logging
+if self.lookup("MevoMiner")
+  self.invoke("unloadmod", "MevoMiner", message.peer_id)
 
 # meta developer: большая часть кода @kepperok добавления и улучшения @tot_882
 @loader.tds
