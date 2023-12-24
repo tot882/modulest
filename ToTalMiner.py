@@ -7,8 +7,7 @@ from ..inline.types import InlineCall
 import inspect
 import re
 import logging
-if self.lookup("MevoMiner")
-  self.invoke("unloadmod", "MevoMiner", message.peer_id)
+
 
 # meta developer: большая часть кода @kepperok добавления и улучшения @tot_882
 @loader.tds
@@ -27,6 +26,8 @@ class ToTalMiner(loader.Module):
         "zv": "\n<emoji document_id=5438496463044752972>⭐️</emoji> Зв:",
         "plasma": "\nПлазма<emoji document_id=5431783411981228752>🎆</emoji>:"
     }
+        if self.lookup("MevoMiner")
+            self.invoke("unloadmod", "MevoMiner", message.peer_id)
     def __init__(self):
         super().__init__()
         self.mining = False
