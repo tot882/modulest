@@ -25,7 +25,7 @@ class ToTalMiner(loader.Module):
         "zv": "\n<emoji document_id=5438496463044752972>⭐️</emoji> Зв:",
         "plasma": "\nПлазма<emoji document_id=5431783411981228752>🎆</emoji>:"
     }
-    if self.lookup("MevoMiner")
+    if self.lookup("MevoMiner"):
         await self.invoke("unloadmod", "MevoMiner", message.peer_id)
     def __init__(self):
         super().__init__()
