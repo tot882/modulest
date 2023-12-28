@@ -7,42 +7,26 @@ from ..inline.types import InlineCall
 import inspect
 import re
 import logging
+import base64
 
 # meta developer: большая часть кода @kepperok добавления и улучшения @tot_882
 @loader.tds
 class ToTalMiner(loader.Module):
     strings = {
         "name": "ToTalMiner",
-        "kt": "\n<emoji document_id=5775973900580031963>✉️</emoji> Конверт:",
-        "rkt": "\n<emoji document_id=5422375702731170355>🧧</emoji> Редкий Конверт:",
-        "k": "\n📦 Кейс:",
-        "rk": "\n<emoji document_id=5350387571199319521>🗳</emoji> Редкий Кейс:",
-        "mif": "\n<emoji document_id=5210872082644083598>🕋</emoji> Мифический Кейс:",
-        "kr": "\n<emoji document_id=5309958691854754293>💎</emoji> Кристальный Кейс:",
-        "dk": "\n<emoji document_id=5353060651470176045>🎲</emoji> Дайс Кейс:",
-        "ssp": "\n<emoji document_id=5380056101473492248>👜</emoji> Сумка c Предметами:",
-        "pse": "\n<emoji document_id=5359785904535774578>💼</emoji> Портфель c Эскизами:",
+        "kt": "\n<emoji document_id=5775973900580031963>✉️</emoji> Конверт",
+        "rkt": "\n<emoji document_id=5422375702731170355>🧧</emoji> Редкий Конверт",
+        "k": "\n📦 Кейс",
+        "rk": "\n<emoji document_id=5350387571199319521>🗳</emoji> Редкий Кейс",
+        "mif": "\n<emoji document_id=5210872082644083598>🕋</emoji> Мифический Кейс",
+        "kr": "\n<emoji document_id=5309958691854754293>💎</emoji> Кристальный Кейс",
+        "dk": "\n<emoji document_id=5353060651470176045>🎲</emoji> Дайс Кейс",
+        "ssp": "\n<emoji document_id=5380056101473492248>👜</emoji> Сумка c Предметами",
+        "pse": "\n<emoji document_id=5359785904535774578>💼</emoji> Портфель c Эскизами",
         "zv": "\n<emoji document_id=5438496463044752972>⭐️</emoji> Зв:",
-        "plasma": "\nПлазма<emoji document_id=5431783411981228752>🎆</emoji>:"
+        "plasma": "\n<emoji document_id=5431783411981228752>🎆</emoji>Плазма"
     }
-    if self.lookup("MevoMiner"):
-        await self.invoke("unloadmod", "MevoMiner", message.peer_id)
-    def __init__(self):
-        super().__init__()
-        self.mining = False
-        self.messages_sent = 0
-        self.kt = 0
-        self.rkt = 0
-        self.k = 0
-        self.rk = 0
-        self.mif = 0
-        self.dk = 0
-        self.kr = 0
-        self.ss = 0
-        self.ps = 0
-        self.zv = 0
-        self.plasma = 0
-        
+
 
     async def client_ready(self, client, db):
         self.bb = False
@@ -92,13 +76,12 @@ class ToTalMiner(loader.Module):
             })
         await self.continue_mining()
 
-
     @loader.watcher()
     async def watcher(self, message):
         a = self.get("kol_cases")
         if hasattr(message, 'from_id') and hasattr(message, 'chat_id') and message.from_id == 5522271758 and message.chat_id == 5522271758 and "Руда на уровень" in message.raw_text:
             a["clicks"] += 1
-            self.set("kol_cases", a) 
+            self.set("kol_cases", a)
             
         if hasattr(message, 'from_id') and hasattr(message, 'chat_id') and message.from_id == 5522271758 and message.chat_id == 5522271758 and "Найден" in message.raw_text:
             if "✉" in message.raw_text and "Конверт" in message.raw_text:
@@ -188,7 +171,6 @@ class ToTalMiner(loader.Module):
     async def mmm(self, message):
         '''- Включить/выключить копание'''
         self.set('mm', not self.get('mm'))
-
         if self.get('mm'):
             await self.client.send_message(message.chat_id, "<b><emoji document_id=5963318814958423599>⚡️</emoji><emoji document_id=5776257080658758948>⛏</emoji>Коп Вкл<emoji document_id=5776257080658758948>⛏</emoji><emoji document_id=5963318814958423599>⚡️</emoji>")
             await message.delete()
@@ -213,7 +195,7 @@ class ToTalMiner(loader.Module):
             b = self.get("kol_cases")
             for i in a:
                 if a[i]:
-                    cases_text += self.strings(i)+" "+str(b[i])
+                    cases_text += f'{self.strings(i)} {str(b[i])}:'
             await self.client.send_message(message.chat_id, f"<b><emoji document_id=5963318814958423599>⚡️</emoji><emoji document_id=5776257080658758948>⛏</emoji> Коп выкл <emoji document_id=5776257080658758948>⛏</emoji><emoji document_id=5963318814958423599>⚡️</emoji>\n<emoji document_id=5406631276042002796>📨</emoji> Всего копаний сделано: {b['clicks']}\n<emoji document_id=5843623986293902590>⬇️</emoji>За этот период ты выкопал <emoji document_id=5843623986293902590>⬇️</emoji>\n{cases_text}</b>")
             await message.delete()
             
@@ -429,6 +411,12 @@ class ToTalMiner(loader.Module):
                 ],
                 [
                     {
+                        'text' : 'Переключение элементов статистики',
+                        'callback' : self.els,
+                    },
+                ],
+                [
+                    {
                         'text' : '🔙 Назад',
                         'callback' : self.iback,
                     },
@@ -475,6 +463,12 @@ class ToTalMiner(loader.Module):
                     {
                         'text' : 'Копание после FloodWait',
                         'callback' : self.ifs,
+                    },
+                ],
+                [
+                    {
+                        'text' : 'Переключение элементов статистики',
+                        'callback' : self.els,
                     },
                 ],
                 [
@@ -529,6 +523,12 @@ class ToTalMiner(loader.Module):
                 ],
                 [
                     {
+                        'text' : 'Переключение элементов статистики',
+                        'callback' : self.els,
+                    },
+                ],
+                [
+                    {
                         'text' : '🔙 Назад',
                         'callback' : self.iback,
                     },
@@ -579,6 +579,12 @@ class ToTalMiner(loader.Module):
                 ],
                 [
                     {
+                        'text' : 'Переключение элементов статистики',
+                        'callback' : self.els,
+                    },
+                ],
+                [
+                    {
                         'text' : '🔙 Назад',
                         'callback' : self.iback,
                     },
@@ -590,3 +596,56 @@ class ToTalMiner(loader.Module):
             ]
         )
          
+    
+
+    async def els(self, call: InlineCall):
+        c = self.get("cases")
+        text = '<b>Включенные элементы:</b>\n'
+        for a in c:
+            text += f'<i>{self.strings[a]}</i>' if c[a] else ''
+        text += '\n\n<b>Нажмите на кнопку внизу для выключения или включения элемента</b>'
+        await call.edit(text=text, reply_markup=[
+            [
+                {
+                    'text': '✉️ Конверт',
+                    'callback': self.elskt,
+                }
+            ],
+            [
+                {
+                    'text' : '🔙 Назад',
+                    'callback' : self.ifs,
+                },
+                {
+                    'text' : '🔻 Закрыть',
+                    'action' : 'close'
+                }
+            ]
+        ])
+
+    async def elskt(self, call: InlineCall):
+        c = self.get("cases")
+        c['kt'] = not c['kt']
+        self.set("cases", c)
+        text = '<b>Включенные элементы:</b>\n'
+        for a in c:
+            text += f'<i>{self.strings[a]}</i>' if c[a] else ''
+        text += '\n\n<b>Нажмите на кнопку внизу для выключения или включения элемента</b>'
+        await call.edit(text=text, reply_markup=[
+            [
+                {
+                    'text': '✉️ Конверт',
+                    'callback': self.elskt,
+                }
+            ],
+            [
+                {
+                    'text' : '🔙 Назад',
+                    'callback' : self.ifs,
+                },
+                {
+                    'text' : '🔻 Закрыть',
+                    'action' : 'close'
+                }
+            ]
+        ]) 
